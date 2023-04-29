@@ -1,7 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,500&display=swap");
 
-:root{
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
+:root {
+  --background: hsl(0, 0%, 13%);
+  --backgroundKeyboard: hsla(264, 39%, 36%, 0.3);
+  --font-family: "Roboto", sans-serif;
+  --font-size: 2rem;
+  --box-shadowKeyboard: 0.1rem 0.4rem 0rem 0.3rem hsl(279, 44%, 70%),
+    0.4rem 0.6rem 1rem 0.3rem hsl(264, 39%, 36%);
+  --box-shadowTextArea: 0.2rem 0.3rem 0.5rem 0.1rem hsl(264, 39%, 36%);
+  --text-shadow: 0 0 1rem hsl(0, 0%, 100%), 0.1rem -0.1rem 0.1rem hsl(0, 0%, 0%);
+  --border-radius: 0.5rem;
+  --widthArea: 90rem;
+  --color1: hsl(57, 54%, 63%);
+  --color2: hsl(279, 44%, 70%);
+  --color3: hsl(272, 62%, 53%);
+  --color4: hsl(264, 39%, 36%);
 }
 
 * {
@@ -15,32 +34,184 @@ html {
 
 body {
   width: 100%;
+  background: var(--background);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
 }
 
 .wrapper {
   width: 100%;
   height: 100vh;
+  gap: 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.keybord {
+.keyboard {
   display: flex;
-  
+  place-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: var(--widthArea);
+  background: var(--backgroundKeyboard);
+  box-shadow: var(--box-shadowKeyboard);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  gap: 1rem;
 }
 
 .textarea {
+  width: var(--widthArea);
+  height: 20rem;
+  background-color: var(--color2);
+  border: 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadowTextArea);
+  resize: none;
+  outline: 0;
+  padding: 0.8em;
+  font-size: var(--font-size);
 }
 
 .k-key {
+  width: 5rem;
+  height: 5rem;
+  display: grid;
+  place-content: center;
+  position: relative;
+  background: var(--color3);
+  color: var(--color1);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
+.k-key:before,
+.k-key:after {
+  position: absolute;
+  content: "";
+  inset: -0.2rem;
+  background: conic-gradient(
+      from var(--gradient-angle),
+      rgb(223, 202, 17),
+      rgb(185, 4, 4) 40%,
+      rgb(54, 75, 233)
+    ),
+    conic-gradient(from var(--gradient-angle), transparent 20%, rgb(6, 24, 102), rgb(228, 30, 254));
+  border-radius: inherit;
+  z-index: -1;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+.k-key:after {
+  -webkit-filter: blur(0.5rem);
+  filter: blur(0.5rem);
+}
+
+.k-key:nth-child(14) {
+  width: 12rem;
+}
+
+.k-key:nth-child(15) {
+  width: 6rem;
+}
+
+.k-key:nth-child(30) {
+  width: 10rem;
+}
+
+.k-key:nth-child(42) {
+  width: 13rem;
+}
+
+.k-key:nth-child(43),
+.k-key:nth-child(56) {
+  width: 8.5rem;
+}
+
+.k-key:nth-child(57),
+.k-key:nth-child(58),
+.k-key:nth-child(59),
+.k-key:nth-child(61),
+.k-key:nth-child(62) {
+  width: 6rem;
+}
+
+.k-key:nth-child(60) {
+  width: 30rem;
+}
+
+.k-key.--active {
+  background: var(--active);
+  transition: 0.4s all;
+  color: hsl(0, 0%, 100%);
+  text-shadow: var(--text-shadow);
+}
+
+.k-key.--active:after,
+.k-key.--active:before {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+
 .button__clear {
+  width: 30rem;
+  height: 5rem;
+  background: var(--color4);
+  box-shadow: var(--box-shadowTextArea);
+  border: 0.1rem solid var(--color3);
+  border-radius: var(--border-radius);
+  color: var(--color1);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease-out;
+}
+
+.button__clear:hover {
+  color: white;
+  text-shadow: var(--text-shadow);
+}
+
+.button__clear:active {
+  border: 0.2rem solid var(--background);
+  box-shadow: none;
 }
 
 .info {
-  width: 880px;
+  width: var(--widthArea);
+  max-height: 8rem;
+  background: var(--color2);
+  box-shadow: var(--box-shadowTextArea);
+  border-radius: var(--border-radius);
+  text-align: center;
+  padding-block: 1rem;
+  color: var(--color4);
+  white-space: pre;
 }
+
+@-webkit-keyframes spin {
+  0% {
+    --gradient-angle: 0deg;
+  }
+
+  100% {
+    --gradient-angle: -360deg;
+  }
+}
+
+@keyframes spin {
+  0% {
+    --gradient-angle: 0deg;
+  }
+
+  100% {
+    --gradient-angle: -360deg;
+  }
+}
+
