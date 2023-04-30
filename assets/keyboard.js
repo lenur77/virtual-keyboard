@@ -51,6 +51,12 @@
      }
    }
 
+   removeFromPressedKey(code) {
+     if (this.isKeyPressed(code)) {
+       this.pressedKey.splice(this.pressedKey.indexOf(code), 1);
+     }
+   }
+
    isKeyPressed(keyName) {
      return keyName === "CapsLock"
        ? this.capslockPressed
@@ -69,7 +75,6 @@
        capslockButton.classList.add("--active");
      }
    }
-
    changeState(code, type) {
      this.pressKeyAction(code, type);
      this.activateKeys();

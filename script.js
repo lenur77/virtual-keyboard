@@ -7,6 +7,7 @@ const txtInfo = `Клавиатура создана для операционн
   let textField = '';
   let  btn_clear = '';
   let keyboardWrapper = null;
+  // let buttons = [];
 
 window.onload = function () {
  if (data) {
@@ -18,6 +19,8 @@ window.onload = function () {
        handlePress(event, keyboard, textField);
      }
    });
+
+   document.addEventListener("click", event => handleRelease(event, keyboard));
   };
 function generateContent() {
      keyboardWrapper = createElement("div", "wrapper");
@@ -43,6 +46,11 @@ export function createElement(tagName, className) {
 
 function handlePress(event, keyboard) {
   keyboard.changeState(event.target.dataset.keyCode, event.type);
+}
+
+function handleRelease(event, keyboard) {
+  const code = event.target.dataset.keyCode || "";
+  keyboard.changeState(code, event.type);
 }
 
 
