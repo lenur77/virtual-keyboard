@@ -23,6 +23,10 @@
      });
    }
 
+   getButtonInfo(button) {
+     return this.keysArray.filter(key => key.code === button.dataset.keyCode)[0];
+   }
+
    pressKeyAction(code, event) {
      switch (code) {
        case "CapsLock":
@@ -63,6 +67,20 @@
        : this.pressedKey.some(key => key.includes(keyName));
    }
 
+   typeOnKeyboard(button, text) {
+     const data = this.getButtonInfo(button);
+     let textField = document.querySelector(".textarea");
+     let cursorPosition = textField.selectionStart;
+     let textBeginning = text.slice(0, cursorPosition);
+     let textEnding = text.slice(cursorPosition);
+     let typedOnKeyboard = "";
+
+       typedOnKeyboard = data[this.language];
+       cursorPosition += 1;
+     textField.value = textBeginning + typedOnKeyboard + textEnding;
+     textField.setSelectionRange(cursorPosition, cursorPosition);
+   }
+
    activateKeys() {
      const buttons = this.view.querySelectorAll(".k-key");
      buttons.forEach(button => {
@@ -75,6 +93,7 @@
        capslockButton.classList.add("--active");
      }
    }
+
    changeState(code, type) {
      this.pressKeyAction(code, type);
      this.activateKeys();

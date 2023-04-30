@@ -7,7 +7,6 @@ const txtInfo = `Клавиатура создана для операционн
   let textField = '';
   let  btn_clear = '';
   let keyboardWrapper = null;
-  // let buttons = [];
 
 window.onload = function () {
  if (data) {
@@ -44,8 +43,9 @@ export function createElement(tagName, className) {
   return element;
 }
 
-function handlePress(event, keyboard) {
+function handlePress(event, keyboard, textField) {
   keyboard.changeState(event.target.dataset.keyCode, event.type);
+  keyboard.typeOnKeyboard(event.target, textField.value);
 }
 
 function handleRelease(event, keyboard) {
