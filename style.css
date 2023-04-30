@@ -163,6 +163,7 @@ body {
 .button__clear {
   width: 30rem;
   height: 5rem;
+  font-family: var(--font-family);
   background: var(--color4);
   box-shadow: var(--box-shadowTextArea);
   border: 0.1rem solid var(--color3);
