@@ -22,7 +22,7 @@ export const data = [
     en: "2",
     enShift: "@",
     ru: "2",
-    ruShift: '""',
+    ruShift: '"',
     classes: "k-key",
     place: 2,
   },

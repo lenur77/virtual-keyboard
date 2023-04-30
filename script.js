@@ -1,53 +1,48 @@
 import { data } from "./assets/data.js";
+import { Keyboard } from "./assets/keyboard.js";
 
 const buttonText = "Очистить поле ввода";
 const txtInfo = `Клавиатура создана для операционной системы Windows. \n Для переключения языка нажмите: SHIFT + ALT`;
+  let keyboard = [] ;
+  let textField = '';
+  let  btn_clear = '';
+  let keyboardWrapper = null;
 
-window.addEventListener("load", () => {
-  const keyboardWrapper = createElement("div", "wrapper");
-  document.body.appendChild(keyboardWrapper);
+window.onload = function () {
+ if (data) {
+    generateContent();
+ } 
+  
+   keyboardWrapper.addEventListener("mousedown", event => {
+     if (event.target.className === "k-key") {
+       handlePress(event, keyboard, textField);
+     }
+   });
+  };
+function generateContent() {
+     keyboardWrapper = createElement("div", "wrapper");
+    document.body.appendChild(keyboardWrapper);
 
-  const textField = createElement("textarea", "textarea");
-  keyboardWrapper.appendChild(textField);
+     textField = createElement("textarea", "textarea");
+    keyboardWrapper.appendChild(textField);
 
-  new Keyboard(data, keyboardWrapper);
+    keyboard = new Keyboard(data, keyboardWrapper);  
+    btn_clear = createElement("button", "button__clear");
+    btn_clear.textContent = buttonText;
+    keyboardWrapper.append(btn_clear);
 
-  const btn_clear = createElement("button", "button__clear");
-  btn_clear.textContent = buttonText;
-  keyboardWrapper.append(btn_clear);
-
-  const infoField = createElement("div", "info");
-  infoField.textContent = txtInfo;
-  keyboardWrapper.append(infoField);
-});
-
-class Keyboard {
-  constructor(keysArray, view) {
-    this.language = "en";
-    this.keysArray = keysArray;
-    this.view = view;
-    this.capslockPressed = false;
-    this.pressed = [];
-    this.createKeyboard();
-  }
-
-  createKeyboard() {
-    const keyboardInit = createElement("div", "keyboard");
-    this.view.append(keyboardInit);
-
-    this.keysArray.forEach(keyObject => {
-      const button = document.createElement("div");
-      button.dataset.keyCode = keyObject.code;
-      if (keyObject.classes) button.classList = keyObject.classes;
-      button.innerHTML = keyObject.isSpecial ? keyObject.name : keyObject[this.language];
-      keyboardInit.append(button);
-      //   console.log(this.view)
-    });
-  }
+    const infoField = createElement("div", "info");
+    infoField.textContent = txtInfo;
+    keyboardWrapper.append(infoField);
 }
-
-function createElement(tagName, className) {
+export function createElement(tagName, className) {
   const element = document.createElement(tagName);
   element.classList.add(className);
   return element;
 }
+
+function handlePress(event, keyboard) {
+  keyboard.changeState(event.target.dataset.keyCode, event.type);
+}
+
+
