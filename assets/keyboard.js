@@ -1,4 +1,5 @@
 import { createElement } from "../script.js";
+import { changeColorKeys } from "../assets/changeColorHSL.js"
 
 export class Keyboard {
   constructor(keysArray, view) {
@@ -210,10 +211,12 @@ export class Keyboard {
       let keyCode = kKey.dataset.keyCode;
       let isKeyPressed = this.pressedKey.includes(keyCode);
       kKey.classList.toggle("--active", isKeyPressed);
+      changeColorKeys("--active");
     });
     if (this.capsLockPressed) {
       let capslockButton = this.view.querySelector('[data-key-code="CapsLock"]');
       capslockButton.classList.add("--active");
+       changeColorKeys("--active");
     }
   }
 
