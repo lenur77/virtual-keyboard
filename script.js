@@ -26,6 +26,9 @@ window.onload = function () {
     if (event.target.className === "button__clear") {
       handleClick(textField);
     }
+      textField.focus();
+      textField.addEventListener("blur", () => textField.focus());
+      window.addEventListener("blur", () => handleWindowBlur(keyboard));
   });
 };
 
@@ -74,4 +77,13 @@ function handleComputerKey(event, keyboard, textField) {
 
 function handleClick(textField) {
   textField.value = "";
+}
+
+function handleWindowBlur(keyboard) {
+  if (keyboard.pressedKey.includes("CapsLock")) {
+    keyboard.pressedKey = ["CapsLock"];
+  } else {
+    keyboard.pressedKey = [];
+  }
+  keyboard.activateKeys();
 }
