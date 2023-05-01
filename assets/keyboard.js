@@ -1,8 +1,10 @@
 import { createElement } from "../script.js";
+import { changeColorKeys } from "../assets/changeColorHSL.js";
+// import { data } from "./data.js";
 
 export class Keyboard {
   constructor(keysArray, view) {
-    this.language = "ru";
+    this.language = this.getLanguage();
     this.keysArray = keysArray;
     this.view = view;
     this.capsLockPressed = false;
@@ -20,11 +22,17 @@ export class Keyboard {
       if (keyObject.classes) kKey.classList = keyObject.classes;
       kKey.innerHTML = keyObject.isSpecial ? keyObject.name : keyObject[this.language];
       keyboardInit.append(kKey);
+      if (keyObject.classes && !keyObject.isSpecial) {
+        const span = document.createElement("span");
+        span.classList.add("k-key__span");
+        span.innerHTML = keyObject[`${this.language}Shift`];
+        kKey.append(span);
+      }
     });
   }
 
-  getButtonInfo(kKey) {
-    return this.keysArray.filter(key => key.code === kKey.dataset.keyCode)[0];
+  getButtonInfo(el) {
+    return this.keysArray.filter(key => key.code === el.dataset.keyCode)[0];
   }
 
   pressKeyAction(code, event) {
@@ -70,12 +78,11 @@ export class Keyboard {
   updateKeys() {
     let kKeys = document.querySelectorAll(".k-key");
     kKeys.forEach(kKey => {
-      const { code, isSpecial, [this.language]: text } = this.getButtonInfo(kKey);
+      let { code, isSpecial, [this.language]: text } = this.getButtonInfo(kKey);
       let updatedText = text;
-
       if (!isSpecial) {
         if (
-          this.isKeyPressed("Shift") ||
+          (!this.isKeyPressed("AltLeft") && this.isKeyPressed("Shift")) ||
           (this.isKeyPressed("Shift") && this.isKeyPressed("CapsLock"))
         ) {
           updatedText = this.getButtonInfo(kKey)[`${this.language}Shift`];
@@ -83,7 +90,7 @@ export class Keyboard {
           updatedText = text.toUpperCase();
         }
 
-        document.querySelector(`[data-key-code='${code}']`).innerHTML = updatedText;
+        document.querySelector(`[data-key-code=${code}]`).innerHTML = updatedText;
       }
     });
   }
@@ -117,6 +124,13 @@ export class Keyboard {
           typedOnKeyboard = " ";
           cursorPosition += 1;
           break;
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+          this.moveCursor(data.code);
+          cursorPosition = textField.selectionStart;
+          break;
 
         default:
           typedOnKeyboard = "";
@@ -138,16 +152,77 @@ export class Keyboard {
     textField.setSelectionRange(cursorPosition, cursorPosition);
   }
 
+  setLanguage(language = this.language) {
+    localStorage.setItem("language", language);
+    return this;
+  }
+
+  getLanguage() {
+    let currentLang = "en";
+    if (!localStorage.getItem("language")) {
+      this.setLanguage(currentLang);
+    } else {
+      currentLang = localStorage.getItem("language");
+    }
+    return currentLang;
+  }
+
+  switchLanguage() {
+    if (this.isKeyPressed("ShiftLeft") && this.isKeyPressed("AltLeft")) {
+      this.language = this.language === "en" ? "ru" : "en";
+      this.setLanguage(this.language);
+    }
+  }
+
+  moveCursor(keyCode) {
+    let textField = document.querySelector(".textarea");
+    let direction =
+      keyCode === "ArrowLeft" || keyCode === "ArrowRight"
+        ? "horizontally"
+        : keyCode === "ArrowUp" || keyCode === "ArrowDown"
+        ? "vertically"
+        : null;
+
+    if (!direction) {
+      throw new Error("Invalid keyCode");
+    }
+
+    const goHorizontally = () => {
+      let shifting = textField.selectionStart;
+      shifting += keyCode === "ArrowLeft" ? -1 : 1;
+      textField.setSelectionRange(shifting, shifting);
+    };
+
+    const goVertically = () => {
+      let cursorPosition = textField.selectionEnd;
+      let prevLine = textField.value.lastIndexOf("\n", cursorPosition);
+      let nextLine = textField.value.indexOf("\n", cursorPosition + 1);
+
+      if (nextLine === -1) {
+        return;
+      }
+
+      cursorPosition += keyCode === "ArrowUp" ? -prevLine : nextLine;
+      textField.setSelectionRange(cursorPosition, cursorPosition);
+    };
+
+    direction === "horizontally" ? goHorizontally() : goVertically();
+
+    return this;
+  }
+
   activateKeys() {
     let kKeys = this.view.querySelectorAll(".k-key");
     kKeys.forEach(kKey => {
       let keyCode = kKey.dataset.keyCode;
       let isKeyPressed = this.pressedKey.includes(keyCode);
       kKey.classList.toggle("--active", isKeyPressed);
+      changeColorKeys("--active");
     });
     if (this.capsLockPressed) {
       let capslockButton = this.view.querySelector('[data-key-code="CapsLock"]');
       capslockButton.classList.add("--active");
+      changeColorKeys("--active");
     }
   }
 
@@ -155,5 +230,6 @@ export class Keyboard {
     this.pressKeyAction(code, type);
     this.activateKeys();
     this.updateKeys();
+    this.switchLanguage();
   }
 }

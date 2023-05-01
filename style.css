@@ -90,6 +90,12 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+.k-key__span {
+  margin-top: -1.2rem;
+  margin-left: -1.2rem;
+  font-size: 1.2rem;
+  order: -1;
+}
 
 .k-key:before,
 .k-key:after {
