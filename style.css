@@ -8,19 +8,20 @@
 
 :root {
   --background: hsl(0, 0%, 13%);
-  --backgroundKeyboard: hsla(264, 39%, 36%, 0.3);
+  --backgroundKeyboard: hsla(260, 53%, 34%, 0.3);
   --font-family: "Roboto", sans-serif;
   --font-size: clamp(0.9rem, 0.3rem + 1.5vw, 2rem);
-  --box-shadowKeyboard: 0.05em 0.2em 0em 0.15em hsl(279, 44%, 70%),
+  --box-shadowKeyboard: 0.05em 0.2em 0em 0.15em hsl(273, 35%, 57%),
     0.2em 0.3em .5em 0.15em hsl(264, 39%, 36%);
-  --box-shadowTextArea: 0.1em 0.15em 0.2em 0.05em hsl(264, 39%, 36%);
+  --box-shadowTextArea: 0.1em 0.15em 0.2em 0.05em hsl(257, 89%, 61%);
   --text-shadow: 0 0 1rem hsl(0, 0%, 100%), 0.05em -0.05em 0.05em hsl(0, 0%, 0%);
   --border-radius: 0.2em;
   --widthArea:clamp(29rem, 0.5682rem + 90.9091vw, 90rem);
-  --color1: hsl(57, 54%, 63%);
-  --color2: hsl(279, 44%, 70%);
-  --color3: hsl(272, 62%, 53%);
-  --color4: hsl(264, 39%, 36%);
+  --color1: hsl(240, 2%, 89%);
+  --color2: hsl(266, 26%, 78%);
+  --color3: hsl(273, 35%, 57%);
+  --color4: hsl(271, 27%, 37%);
+  --color5: hsl(257, 89%, 61%);
 }
 
 * {
@@ -105,9 +106,11 @@ font-size: clamp(0.7rem, 0.3rem + 0.75vw, 1.2rem);
   inset: -0.1em;
   background: conic-gradient(
       from var(--gradient-angle),
-      rgb(223, 202, 17),
-      rgb(185, 4, 4) 40%,
-      rgb(54, 75, 233)
+      hsl(272, 77%, 61%) ,
+      hsl(49, 62%, 72%) 40%,
+      hsl(233, 80%, 56%), 
+      hsl(178, 85%, 46%)
+
     ),
     conic-gradient(from var(--gradient-angle), transparent 20%, rgb(6, 24, 102), rgb(228, 30, 254));
   border-radius: inherit;

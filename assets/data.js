@@ -251,7 +251,7 @@ export const data = [
   {
     code: "Delete",
     isSpecial: true,
-    name: "DEL",
+    name: "Del",
     classes: "k-key k-key-delete",
     place: 28,
   },
