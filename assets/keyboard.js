@@ -5,7 +5,7 @@ export class Keyboard {
     this.language = "ru";
     this.keysArray = keysArray;
     this.view = view;
-    this.capslockPressed = false;
+    this.capsLockPressed = false;
     this.pressedKey = [];
     this.createKeyboard();
   }
@@ -15,23 +15,23 @@ export class Keyboard {
     this.view.append(keyboardInit);
 
     this.keysArray.forEach(keyObject => {
-      const button = document.createElement("div");
-      button.dataset.keyCode = keyObject.code;
-      if (keyObject.classes) button.classList = keyObject.classes;
-      button.innerHTML = keyObject.isSpecial ? keyObject.name : keyObject[this.language];
-      keyboardInit.append(button);
+      const kKey = document.createElement("div");
+      kKey.dataset.keyCode = keyObject.code;
+      if (keyObject.classes) kKey.classList = keyObject.classes;
+      kKey.innerHTML = keyObject.isSpecial ? keyObject.name : keyObject[this.language];
+      keyboardInit.append(kKey);
     });
   }
 
-  getButtonInfo(button) {
-    return this.keysArray.filter(key => key.code === button.dataset.keyCode)[0];
+  getButtonInfo(kKey) {
+    return this.keysArray.filter(key => key.code === kKey.dataset.keyCode)[0];
   }
 
   pressKeyAction(code, event) {
     switch (code) {
       case "CapsLock":
         if (["mousedown", "keydown"].includes(event)) {
-          this.capslockPressed = !this.capslockPressed;
+          this.capsLockPressed = !this.capsLockPressed;
         }
         break;
 
@@ -63,33 +63,90 @@ export class Keyboard {
 
   isKeyPressed(keyName) {
     return keyName === "CapsLock"
-      ? this.capslockPressed
+      ? this.capsLockPressed
       : this.pressedKey.some(key => key.includes(keyName));
   }
 
-  typeOnKeyboard(button, text) {
-    const data = this.getButtonInfo(button);
+  updateKeys() {
+    let kKeys = document.querySelectorAll(".k-key");
+    kKeys.forEach(kKey => {
+      const { code, isSpecial, [this.language]: text } = this.getButtonInfo(kKey);
+      let updatedText = text;
+
+      if (!isSpecial) {
+        if (
+          this.isKeyPressed("Shift") ||
+          (this.isKeyPressed("Shift") && this.isKeyPressed("CapsLock"))
+        ) {
+          updatedText = this.getButtonInfo(kKey)[`${this.language}Shift`];
+        } else if (this.isKeyPressed("CapsLock")) {
+          updatedText = text.toUpperCase();
+        }
+
+        document.querySelector(`[data-key-code='${code}']`).innerHTML = updatedText;
+      }
+    });
+  }
+
+  typeOnKeyboard(kKey, text) {
     let textField = document.querySelector(".textarea");
+    let data = this.getButtonInfo(kKey);
     let cursorPosition = textField.selectionStart;
     let textBeginning = text.slice(0, cursorPosition);
     let textEnding = text.slice(cursorPosition);
     let typedOnKeyboard = "";
 
-    typedOnKeyboard = data[this.language];
+    if (data.isSpecial) {
+      switch (data.code) {
+        case "Backspace":
+          textBeginning = textBeginning.slice(0, -1);
+          cursorPosition -= 1;
+          break;
+        case "Tab":
+          typedOnKeyboard = "\t";
+          cursorPosition += 1;
+          break;
+        case "Delete":
+          textEnding = textEnding.slice(1);
+          break;
+        case "Enter":
+          typedOnKeyboard = "\n";
+          cursorPosition += 1;
+          break;
+        case "Space":
+          typedOnKeyboard = " ";
+          cursorPosition += 1;
+          break;
+
+        default:
+          typedOnKeyboard = "";
+      }
+    } else {
+      let isShiftKeyPressed = this.isKeyPressed("Shift");
+      let isCapsKeyPressed = this.isKeyPressed("CapsLock");
+      typedOnKeyboard = data[this.language];
+
+      if (isShiftKeyPressed) {
+        typedOnKeyboard = data[`${this.language}Shift`];
+      } else if (isCapsKeyPressed) {
+        typedOnKeyboard = typedOnKeyboard.toUpperCase();
+      }
+      cursorPosition += 1;
+    }
 
     textField.value = textBeginning + typedOnKeyboard + textEnding;
     textField.setSelectionRange(cursorPosition, cursorPosition);
   }
 
   activateKeys() {
-    const buttons = this.view.querySelectorAll(".k-key");
-    buttons.forEach(button => {
-      const keyCode = button.dataset.keyCode;
-      const isKeyPressed = this.pressedKey.includes(keyCode);
-      button.classList.toggle("--active", isKeyPressed);
+    let kKeys = this.view.querySelectorAll(".k-key");
+    kKeys.forEach(kKey => {
+      let keyCode = kKey.dataset.keyCode;
+      let isKeyPressed = this.pressedKey.includes(keyCode);
+      kKey.classList.toggle("--active", isKeyPressed);
     });
-    if (this.capslockPressed) {
-      const capslockButton = this.view.querySelector('[data-key-code="CapsLock"]');
+    if (this.capsLockPressed) {
+      let capslockButton = this.view.querySelector('[data-key-code="CapsLock"]');
       capslockButton.classList.add("--active");
     }
   }
@@ -97,5 +154,6 @@ export class Keyboard {
   changeState(code, type) {
     this.pressKeyAction(code, type);
     this.activateKeys();
+    this.updateKeys();
   }
 }

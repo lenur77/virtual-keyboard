@@ -119,7 +119,7 @@ export const data = [
   {
     code: "Backspace",
     isSpecial: true,
-    name: "Backspace",
+    name: "⌫",
     classes: "k-key k-key-backspace",
     place: 13,
   },
@@ -127,7 +127,7 @@ export const data = [
   {
     code: "Tab",
     isSpecial: true,
-    name: "Tab",
+    name: "↹",
     classes: "k-key k-key-tab",
     place: 14,
   },

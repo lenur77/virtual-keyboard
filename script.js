@@ -14,11 +14,13 @@ window.onload = function () {
   }
 
   keyboardWrapper.addEventListener("mousedown", event => {
-    if (event.target.className === "k-key") {
+    if (event.target.classList.contains("k-key")) {
       handlePress(event, keyboard, textField);
     }
   });
   document.addEventListener("click", event => handleRelease(event, keyboard));
+  document.addEventListener("keydown", event => handleComputerKey(event, keyboard, textField));
+  document.addEventListener("keyup", event => handleComputerKey(event, keyboard, textField));
 
   btn_clear.addEventListener("click", event => {
     if (event.target.className === "button__clear") {
@@ -58,6 +60,18 @@ function handleRelease(event, keyboard) {
   const code = event.target.dataset.keyCode || "";
   keyboard.changeState(code, event.type);
 }
+
+function handleComputerKey(event, keyboard, textField) {
+  event.preventDefault();
+  let key = keyboard.view.querySelector(`[data-key-code="${event.code}"]`);
+  if (key) {
+    keyboard.changeState(event.code, event.type);
+    if (event.type === "keydown") {
+      keyboard.typeOnKeyboard(key, textField.value);
+    }
+  }
+}
+
 function handleClick(textField) {
   textField.value = "";
 }
