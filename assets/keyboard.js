@@ -1,9 +1,10 @@
 import { createElement } from "../script.js";
-import { changeColorKeys } from "../assets/changeColorHSL.js"
+import { changeColorKeys } from "../assets/changeColorHSL.js";
+// import { data } from "./data.js";
 
 export class Keyboard {
   constructor(keysArray, view) {
-    this.language = "ru";
+    this.language = this.getLanguage();
     this.keysArray = keysArray;
     this.view = view;
     this.capsLockPressed = false;
@@ -21,11 +22,17 @@ export class Keyboard {
       if (keyObject.classes) kKey.classList = keyObject.classes;
       kKey.innerHTML = keyObject.isSpecial ? keyObject.name : keyObject[this.language];
       keyboardInit.append(kKey);
+      if (keyObject.classes && !keyObject.isSpecial) {
+        const span = document.createElement("span");
+        span.classList.add("k-key__span");
+        span.innerHTML = keyObject[`${this.language}Shift`];
+        kKey.append(span);
+      }
     });
   }
 
-  getButtonInfo(kKey) {
-    return this.keysArray.filter(key => key.code === kKey.dataset.keyCode)[0];
+  getButtonInfo(el) {
+    return this.keysArray.filter(key => key.code === el.dataset.keyCode)[0];
   }
 
   pressKeyAction(code, event) {
@@ -71,9 +78,8 @@ export class Keyboard {
   updateKeys() {
     let kKeys = document.querySelectorAll(".k-key");
     kKeys.forEach(kKey => {
-      const { code, isSpecial, [this.language]: text } = this.getButtonInfo(kKey);
+      let { code, isSpecial, [this.language]: text } = this.getButtonInfo(kKey);
       let updatedText = text;
-
       if (!isSpecial) {
         if (
           (!this.isKeyPressed("AltLeft") && this.isKeyPressed("Shift")) ||
@@ -84,7 +90,7 @@ export class Keyboard {
           updatedText = text.toUpperCase();
         }
 
-        document.querySelector(`[data-key-code='${code}']`).innerHTML = updatedText;
+        document.querySelector(`[data-key-code=${code}]`).innerHTML = updatedText;
       }
     });
   }
@@ -169,7 +175,7 @@ export class Keyboard {
   }
 
   moveCursor(keyCode) {
-   let textField = document.querySelector(".textarea");
+    let textField = document.querySelector(".textarea");
     let direction =
       keyCode === "ArrowLeft" || keyCode === "ArrowRight"
         ? "horizontally"
@@ -216,7 +222,7 @@ export class Keyboard {
     if (this.capsLockPressed) {
       let capslockButton = this.view.querySelector('[data-key-code="CapsLock"]');
       capslockButton.classList.add("--active");
-       changeColorKeys("--active");
+      changeColorKeys("--active");
     }
   }
 
