@@ -75,7 +75,7 @@ export class Keyboard {
 
       if (!isSpecial) {
         if (
-          this.isKeyPressed("Shift") ||
+          ((!this.isKeyPressed("AltLeft")) && this.isKeyPressed("Shift")) ||
           (this.isKeyPressed("Shift") && this.isKeyPressed("CapsLock"))
         ) {
           updatedText = this.getButtonInfo(kKey)[`${this.language}Shift`];
@@ -138,6 +138,28 @@ export class Keyboard {
     textField.setSelectionRange(cursorPosition, cursorPosition);
   }
 
+  setLanguage(language = this.language) {
+    localStorage.setItem("language", language);
+    return this;
+  }
+
+  getLanguage() {
+    let currentLang = "en";
+    if (!localStorage.getItem("language")) {
+      this.setLanguage(currentLang);
+    } else {
+      currentLang = localStorage.getItem("language");
+    }
+    return currentLang;
+  }
+
+  switchLanguage() {
+    if (this.isKeyPressed("ShiftLeft") && this.isKeyPressed("AltLeft")) {
+      this.language = this.language === "en" ? "ru" : "en";
+      this.setLanguage(this.language);
+    }
+  }
+
   activateKeys() {
     let kKeys = this.view.querySelectorAll(".k-key");
     kKeys.forEach(kKey => {
@@ -155,5 +177,6 @@ export class Keyboard {
     this.pressKeyAction(code, type);
     this.activateKeys();
     this.updateKeys();
+    this.switchLanguage();
   }
 }
