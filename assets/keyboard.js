@@ -75,7 +75,7 @@ export class Keyboard {
 
       if (!isSpecial) {
         if (
-          ((!this.isKeyPressed("AltLeft")) && this.isKeyPressed("Shift")) ||
+          (!this.isKeyPressed("AltLeft") && this.isKeyPressed("Shift")) ||
           (this.isKeyPressed("Shift") && this.isKeyPressed("CapsLock"))
         ) {
           updatedText = this.getButtonInfo(kKey)[`${this.language}Shift`];
@@ -116,6 +116,13 @@ export class Keyboard {
         case "Space":
           typedOnKeyboard = " ";
           cursorPosition += 1;
+          break;
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+          this.moveCursor(data.code);
+          cursorPosition = textField.selectionStart;
           break;
 
         default:
@@ -158,6 +165,43 @@ export class Keyboard {
       this.language = this.language === "en" ? "ru" : "en";
       this.setLanguage(this.language);
     }
+  }
+
+  moveCursor(keyCode) {
+   let textField = document.querySelector(".textarea");
+    let direction =
+      keyCode === "ArrowLeft" || keyCode === "ArrowRight"
+        ? "horizontally"
+        : keyCode === "ArrowUp" || keyCode === "ArrowDown"
+        ? "vertically"
+        : null;
+
+    if (!direction) {
+      throw new Error("Invalid keyCode");
+    }
+
+    const goHorizontally = () => {
+      let shifting = textField.selectionStart;
+      shifting += keyCode === "ArrowLeft" ? -1 : 1;
+      textField.setSelectionRange(shifting, shifting);
+    };
+
+    const goVertically = () => {
+      let cursorPosition = textField.selectionEnd;
+      let prevLine = textField.value.lastIndexOf("\n", cursorPosition);
+      let nextLine = textField.value.indexOf("\n", cursorPosition + 1);
+
+      if (nextLine === -1) {
+        return;
+      }
+
+      cursorPosition += keyCode === "ArrowUp" ? -prevLine : nextLine;
+      textField.setSelectionRange(cursorPosition, cursorPosition);
+    };
+
+    direction === "horizontally" ? goHorizontally() : goVertically();
+
+    return this;
   }
 
   activateKeys() {
