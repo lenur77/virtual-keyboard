@@ -10,13 +10,13 @@
   --background: hsl(0, 0%, 13%);
   --backgroundKeyboard: hsla(264, 39%, 36%, 0.3);
   --font-family: "Roboto", sans-serif;
-  --font-size: 2rem;
-  --box-shadowKeyboard: 0.1rem 0.4rem 0rem 0.3rem hsl(279, 44%, 70%),
-    0.4rem 0.6rem 1rem 0.3rem hsl(264, 39%, 36%);
-  --box-shadowTextArea: 0.2rem 0.3rem 0.5rem 0.1rem hsl(264, 39%, 36%);
-  --text-shadow: 0 0 1rem hsl(0, 0%, 100%), 0.1rem -0.1rem 0.1rem hsl(0, 0%, 0%);
-  --border-radius: 0.5rem;
-  --widthArea: 90rem;
+  --font-size: clamp(0.9rem, 0.3rem + 1.5vw, 2rem);
+  --box-shadowKeyboard: 0.05em 0.2em 0em 0.15em hsl(279, 44%, 70%),
+    0.2em 0.3em .5em 0.15em hsl(264, 39%, 36%);
+  --box-shadowTextArea: 0.1em 0.15em 0.2em 0.05em hsl(264, 39%, 36%);
+  --text-shadow: 0 0 1rem hsl(0, 0%, 100%), 0.05em -0.05em 0.05em hsl(0, 0%, 0%);
+  --border-radius: 0.2em;
+  --widthArea:clamp(29rem, 0.5682rem + 90.9091vw, 90rem);
   --color1: hsl(57, 54%, 63%);
   --color2: hsl(279, 44%, 70%);
   --color3: hsl(272, 62%, 53%);
@@ -42,11 +42,12 @@ body {
 .wrapper {
   width: 100%;
   height: 100vh;
-  gap: 3rem;
+  gap: clamp(1rem, 0.02rem + 3vw, 3rem);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-inline: 1rem;
 }
 
 .keyboard {
@@ -58,13 +59,13 @@ body {
   background: var(--backgroundKeyboard);
   box-shadow: var(--box-shadowKeyboard);
   border-radius: var(--border-radius);
-  padding: 1rem;
-  gap: 1rem;
+  padding: .5em;
+  gap: .5em;
 }
 
 .textarea {
   width: var(--widthArea);
-  height: 20rem;
+  height: clamp(10rem, 5rem + 15vw, 20rem);
   background-color: var(--color2);
   border: 0;
   border-radius: var(--border-radius);
@@ -76,9 +77,9 @@ body {
 }
 
 .k-key {
-  width: 5rem;
-  height: 5rem;
   display: grid;
+  width:  clamp(1.5rem, -0.2rem + 5vw, 5rem);
+  height: clamp(2rem, 0.5rem + 4.5vw, 5rem);
   place-content: center;
   position: relative;
   background: var(--color3);
@@ -91,9 +92,9 @@ body {
   user-select: none;
 }
 .k-key__span {
-  margin-top: -1.2rem;
-  margin-left: -1.2rem;
-  font-size: 1.2rem;
+  margin-top: -.5em;
+  margin-left: -.5em;
+font-size: clamp(0.7rem, 0.3rem + 0.75vw, 1.2rem);
   order: -1;
 }
 
@@ -101,7 +102,7 @@ body {
 .k-key:after {
   position: absolute;
   content: "";
-  inset: -0.2rem;
+  inset: -0.1em;
   background: conic-gradient(
       from var(--gradient-angle),
       rgb(223, 202, 17),
@@ -117,40 +118,36 @@ body {
 
 .k-key:after {
   -webkit-filter: blur(0.5rem);
-  filter: blur(0.5rem);
+  filter: blur(0.2em);
 }
 
 .k-key:nth-child(14) {
-  width: 12rem;
-}
+  width: clamp(4rem, 0.0758rem + 12.1212vw, 12rem);
+} 
 
-.k-key:nth-child(15) {
-  width: 6rem;
-}
-
-.k-key:nth-child(30) {
-  width: 10rem;
-}
-
-.k-key:nth-child(42) {
-  width: 13rem;
-}
-
-.k-key:nth-child(43),
-.k-key:nth-child(56) {
-  width: 8.5rem;
-}
-
+.k-key:nth-child(15),
 .k-key:nth-child(57),
 .k-key:nth-child(58),
 .k-key:nth-child(59),
 .k-key:nth-child(61),
 .k-key:nth-child(62) {
-  width: 6rem;
+width: clamp(2rem, 0.0379rem + 6.0606vw, 6rem);
+}
+.k-key:nth-child(30) {
+  width: clamp(3rem, -0.3939rem + 10.6061vw, 10rem);
+}
+ 
+.k-key:nth-child(42) {
+  width: clamp(3.9rem, -0.5121rem + 13.7879vw, 13rem);
+}
+
+.k-key:nth-child(43),
+.k-key:nth-child(56) {
+  width: clamp(2.6rem, -0.1629rem + 8.9394vw, 8.5rem);
 }
 
 .k-key:nth-child(60) {
-  width: 30rem;
+  width: clamp(9.1rem, -1rem + 32vw, 30rem);
 }
 
 .k-key.--active {
@@ -176,7 +173,10 @@ body {
   border-radius: var(--border-radius);
   color: var(--color1);
   cursor: pointer;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   transition: all 0.3s ease-out;
 }
 
@@ -197,7 +197,7 @@ body {
   box-shadow: var(--box-shadowTextArea);
   border-radius: var(--border-radius);
   text-align: center;
-  padding-block: 1rem;
+  padding-block: .5em;
   color: var(--color4);
   white-space: pre;
 }

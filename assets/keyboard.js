@@ -168,7 +168,7 @@ export class Keyboard {
   }
 
   switchLanguage() {
-    if (this.isKeyPressed("ShiftLeft") && this.isKeyPressed("AltLeft")) {
+    if (this.isKeyPressed("ControlLeft") && this.isKeyPressed("AltLeft")) {
       this.language = this.language === "en" ? "ru" : "en";
       this.setLanguage(this.language);
     }

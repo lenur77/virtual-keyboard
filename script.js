@@ -2,7 +2,7 @@ import { data } from "./assets/data.js";
 import { Keyboard } from "./assets/keyboard.js";
 
 const buttonText = "Очистить поле ввода";
-const txtInfo = `Клавиатура создана для операционной системы Windows. \n Для переключения языка нажмите: SHIFT + ALT`;
+const txtInfo = `Клавиатура создана для операционной системы Windows. \n Для переключения языка нажмите: CTRL + ALT`;
 let keyboard = [];
 let textField = "";
 let btn_clear = "";
